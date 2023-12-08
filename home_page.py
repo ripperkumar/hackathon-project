@@ -1,7 +1,7 @@
 import streamlit as st
 from scraping import remove_css_js_and_save_html
 
-def main():
+def home_page():
     st.title("Auto Test Generator")
 
     # Input textbox with styling
@@ -42,5 +42,4 @@ def main():
         st.text(f"Entered text: {input_text}")
         st.text(f"Selected option: {selected_option}")
         st.code(remove_css_js_and_save_html(input_text))
-if __name__ == "__main__":
-    main()
+
