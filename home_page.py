@@ -47,12 +47,13 @@ def home_page():
     """, unsafe_allow_html=True)
     if st.button("Generate Testcase"):
         if not input_text:
-            st.warning("Please enter url.")
+            st.warning("Please enter URL.")
         elif selected_tool == "Select":
             st.warning("Please select tool.")
         elif selected_language == "Select":
             st.warning("Please select language.")
         else:
+            st.success()
             # Display the entered text and selected option
             st.code(remove_css_js_and_save_html(input_text))
 
