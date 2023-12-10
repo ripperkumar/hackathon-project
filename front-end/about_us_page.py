@@ -1,7 +1,5 @@
 import streamlit as st
 
-import streamlit as st
-
 def about_page():
     st.title("About Page")
 

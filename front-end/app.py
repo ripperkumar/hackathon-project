@@ -18,7 +18,7 @@ def main():
 
     if choice == "Home":
         home_page()
-    elif choice == "About":
+    elif choice == "About Us":
         about_page()
 
 if __name__ == "__main__":

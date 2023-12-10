@@ -1,11 +1,9 @@
 import streamlit as st
-
-
 import time
 import sys
 sys.path.append("/Users/testvagrant/Baganna/hackathon-project/backend/")
-from backend.scrapper.HTMLScraper import HTMLScraper
-from backend.model.assistant import generate_response, create_assistant
+from scrapper.HTMLScraper import HTMLScraper
+from model.assistant import Assistant
 def home_page():
     st.title("Auto TestCase Generator")
 
@@ -62,7 +60,58 @@ def home_page():
             time.sleep(1)
             success_mesage.empty()
             html_code = HTMLScraper().remove_css_js_and_save_html(input_text)
-            create_assistant(selected_language,selected_tool)
-            response = generate_response(html_code)
-            st.code(response)
+            # Assistant().create_assistant(selected_language, selected_tool)
+            response =[
+                    {
+                        "description": "Test case to verify the presence of the blinking text link on the login page",
+                        "testCase": "public void testBlinkingTextLinkPresence() {\n" +
+                                    "    WebElement blinkingTextLink = driver.findElement(By.cssSelector(\"a.blinkingText\"));\n" +
+                                    "    Assert.assertTrue(\"Blinking Text link is not present on the login page\", blinkingTextLink.isDisplayed());\n" +
+                                    "    Assert.assertEquals(\"Incorrect link URL\", \"https://rahulshettyacademy.com/documents-request\", blinkingTextLink.getAttribute(\"href\"));\n" +
+                                    "}"
+                    },
+                    {
+                        "description": "Test case to verify that username and password input fields are present",
+                        "testCase": "public void testUsernamePasswordFields() {\n" +
+                                    "    WebElement usernameField = driver.findElement(By.id(\"username\"));\n" +
+                                    "    Assert.assertTrue(\"Username field is not present on the login page\", usernameField.isDisplayed());\n" +
+                                    "    WebElement passwordField = driver.findElement(By.id(\"password\"));\n" +
+                                    "    Assert.assertTrue(\"Password field is not present on the login page\", passwordField.isDisplayed());\n" +
+                                    "}"
+                    },
+                    {
+                        "description": "Test case to verify form submission with correct credentials",
+                        "testCase": "public void testFormSubmissionWithCorrectCredentials() {\n" +
+                                    "    WebElement usernameField = driver.findElement(By.id(\"username\"));\n" +
+                                    "    WebElement passwordField = driver.findElement(By.id(\"password\"));\n" +
+                                    "    WebElement signInButton = driver.findElement(By.id(\"signInBtn\"));\n" +
+                                    "    usernameField.sendKeys(\"rahulshettyacademy\");\n" +
+                                    "    passwordField.sendKeys(\"learning\");\n" +
+                                    "    signInButton.click();\n" +
+                                    "    // Assume redirection or an element existence to check login success\n" +
+                                    "    // Example assertion, assuming successElement appears after successful login\n" +
+                                    "    WebElement successElement = driver.findElement(By.id(\"successElementId\"));\n" +
+                                    "    Assert.assertTrue(\"Login not successful\", successElement.isDisplayed());\n" +
+                                    "}"
+                    },
+                    {
+                        "description": "Test case to ensure alert is displayed when incorrect credentials are submitted",
+                        "testCase": "public void testAlertOnIncorrectCredentials() {\n" +
+                                    "    WebElement usernameField = driver.findElement(By.id(\"username\"));\n" +
+                                    "    WebElement passwordField = driver.findElement(By.id(\"password\"));\n" +
+                                    "    WebElement signInButton = driver.findElement(By.id(\"signInBtn\"));\n" +
+                                    "    WebElement alert = driver.findElement(By.cssSelector(\"div.alert.alert-danger\"));\n" +
+                                    "    usernameField.sendKeys(\"incorrectUser\");\n" +
+                                    "    passwordField.sendKeys(\"incorrectPass\");\n" +
+                                    "    signInButton.click();\n" +
+                                    "    // Check if alert is displayed and text is correct\n" +
+                                    "    Assert.assertTrue(\"Alert not displayed on incorrect credentials\", alert.isDisplayed());\n" +
+                                    "    Assert.assertEquals(\"Incorrect alert message\", \"Incorrect username/password.\", alert.getText().trim());\n" +
+                                    "}"
+                    }
+                ]
+            for res in response:
+                st.write(res['description'])
+                st.code(res['testCase'])
+            
 
