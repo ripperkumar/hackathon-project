@@ -1,6 +1,11 @@
 import streamlit as st
-from scraping import remove_css_js_and_save_html
+
+
 import time
+import sys
+sys.path.append("/Users/testvagrant/Baganna/hackathon-project/backend/")
+from backend.scrapper.HTMLScraper import HTMLScraper
+from backend.model.assistant import generate_response, create_assistant
 def home_page():
     st.title("Auto TestCase Generator")
 
@@ -56,5 +61,8 @@ def home_page():
             success_mesage = st.success("wait for response")
             time.sleep(1)
             success_mesage.empty()
-            st.code(remove_css_js_and_save_html(input_text))
+            html_code = HTMLScraper().remove_css_js_and_save_html(input_text)
+            create_assistant(selected_language,selected_tool)
+            response = generate_response(html_code)
+            st.code(response)
 

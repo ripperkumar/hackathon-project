@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 import time
 import sys
-sys.path.append('/Users/testvagrant/Documents/junior-vagrants/backend/')
+sys.path.append('/Users/testvagrant/Baganna/hackathon-project/backend/')
 from scrapper.HTMLScraper import HTMLScraper
 load_dotenv()
 OPEN_AI_API_KEY = os.getenv("OPEN_AI_API_KEY")
@@ -13,16 +13,16 @@ assistant = None
 # --------------------------------------------------------------
 # Get the code
 # --------------------------------------------------------------
-url_to_scrape = "https://rahulshettyacademy.com/loginpagePractise/"
-html_scraper = HTMLScraper()
-code = html_scraper.remove_css_js_and_save_html(url_to_scrape)
+# url_to_scrape = "https://rahulshettyacademy.com/loginpagePractise/"
+# html_scraper = HTMLScraper()
+# code = html_scraper.remove_css_js_and_save_html(url_to_scrape)
 
 # --------------------------------------------------------------
 # Create assistant
 # --------------------------------------------------------------
-language = "Java"
-tool = "Selenium"
-def create_assistant():
+# language = "Java"
+# tool = "Selenium"
+def create_assistant(language, tool):
     global assistant 
     assistant = client.beta.assistants.create(
         name="Automation code Generator",
@@ -96,11 +96,3 @@ def run_assistant(thread):
     messages = client.beta.threads.messages.list(thread_id=thread.id)
     new_message = messages.data[0].content[0].text.value
     return new_message
-
-
-# --------------------------------------------------------------
-# Test assistant
-# --------------------------------------------------------------
-
-new_message = generate_response(code)
-print(new_message)

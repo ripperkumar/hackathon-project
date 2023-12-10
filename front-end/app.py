@@ -1,4 +1,3 @@
-
 import streamlit as st
 from home_page import home_page
 from about_us_page import about_page
@@ -7,7 +6,7 @@ def main():
 
     # Add image to the top-left corner
     with col1:
-        image = st.sidebar.image("/Users/testvagrant/Baganna/hackathon-project/images/jv.jpg", use_column_width=False, width=80)
+        image = st.sidebar.image("/Users/testvagrant/Baganna/hackathon-project/front-end/images/jv.jpg", use_column_width=False, width=80)
 
     caption_text = "Junior Vagrants"
     with col2:
