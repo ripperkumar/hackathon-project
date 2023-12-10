@@ -10,7 +10,7 @@ def main():
 
     caption_text = "Junior Vagrants"
     with col2:
-        st.sidebar.markdown(f'<div style="float: left;cursor:pointer ;margin-right: auto; margin-top: auto; font-size:15px;">{caption_text}</div>', unsafe_allow_html=True)
+        st.sidebar.markdown(f'<div style="float: left; margin-right: auto; margin-top: auto; font-size:15px;">{caption_text}</div>', unsafe_allow_html=True)
 
     st.sidebar.title("Navigation")
     pages = ["Home", "About Us"]
