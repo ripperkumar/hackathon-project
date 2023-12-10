@@ -6,11 +6,11 @@ def main():
 
     # Add image to the top-left corner
     with col1:
-        image = st.sidebar.image("/Users/testvagrant/Baganna/hackathon-project/front-end/images/jv.jpg", use_column_width=False, width=80)
+        image = st.sidebar.image("/Users/testvagrant/Documents/junior-vagrants/front-end/images/jv.jpg", use_column_width=False, width=80)
 
     caption_text = "Junior Vagrants"
     with col2:
-        st.sidebar.markdown(f'<div style="float: left; margin-right: auto; margin-top: auto; font-size:15px;">{caption_text}</div>', unsafe_allow_html=True)
+        st.sidebar.markdown(f'<div style="float: left;cursor:pointer ;margin-right: auto; margin-top: auto; font-size:15px;">{caption_text}</div>', unsafe_allow_html=True)
 
     st.sidebar.title("Navigation")
     pages = ["Home", "About Us"]
@@ -18,7 +18,7 @@ def main():
 
     if choice == "Home":
         home_page()
-    elif choice == "About":
+    elif choice == "About Us":
         about_page()
 
 if __name__ == "__main__":

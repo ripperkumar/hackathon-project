@@ -4,95 +4,82 @@ from dotenv import load_dotenv
 import os
 import time
 import sys
-sys.path.append('/Users/testvagrant/Baganna/hackathon-project/backend/')
+sys.path.append("/Users/testvagrant/Documents/junior-vagrants/backend/")
 from scrapper.HTMLScraper import HTMLScraper
-load_dotenv()
-OPEN_AI_API_KEY = os.getenv("OPEN_AI_API_KEY")
-client = OpenAI(api_key=OPEN_AI_API_KEY)
-assistant = None
-# --------------------------------------------------------------
-# Get the code
-# --------------------------------------------------------------
-# url_to_scrape = "https://rahulshettyacademy.com/loginpagePractise/"
-# html_scraper = HTMLScraper()
-# code = html_scraper.remove_css_js_and_save_html(url_to_scrape)
 
-# --------------------------------------------------------------
-# Create assistant
-# --------------------------------------------------------------
-# language = "Java"
-# tool = "Selenium"
-def create_assistant(language, tool):
-    global assistant 
-    assistant = client.beta.assistants.create(
-        name="Automation code Generator",
-        instructions=f"""Generate Automation code in ``` {language} language in {tool} tool ```.Cover all edge cases by assertion and checking for element is present.\
-        '''Assume the user has created the WebDriver. ''' \
-        ''' Generate test cases only, focusing on assertions and element presence, following Page Object Model'''\
-        ''' Provide code only, no import statements, no beforeClass or afterClass methods.'''\
-        ```Generate responses in code, not scenarios.
-        Segregate different test cases into separate responses.
-        Provide responses in JSON format.```
-        """,
-        tools=[{"type": "code_interpreter"}],
-        model="gpt-4-1106-preview",
-    )
-    return assistant
-
-assistant = create_assistant()
+class Assistant:
+    def __init__(self):
+        load_dotenv()
+        self.OPEN_AI_API_KEY = os.getenv("OPEN_AI_API_KEY")
+        self.client = OpenAI(api_key=self.OPEN_AI_API_KEY)
+        self.assistant = None
 
 
-# --------------------------------------------------------------
-# Thread management
-# --------------------------------------------------------------
-def check_if_thread_exists(wa_id):
-    with shelve.open("threads_db") as threads_shelf:
-        return threads_shelf.get(wa_id, None)
+    def create_assistant(self, language, tool):
+        self.assistant = self.client.beta.assistants.create(
+            name="Automation code Generator",
+            instructions=f"""Generate Automation code in ``` {language} language in {tool} tool ```. Cover all edge cases by assertion and checking for the presence of all elements.
+            Assume the user has already created the WebDriver.
+            Generate test cases only, focusing on assertions and element presence also performing actions following the Page Object Model.
+            Provide code only, no import statements, no beforeClass or afterClass methods.
+            Generate responses in code, not scenarios. ```Segregate different test cases into separate methods as different responses```.
+            Provide responses in JSON format as mentioned below. 
+            ```All the test cases must be segregated into '''one array of json objects, each objects containing description and testCase in format''':
+            {{
+                "description": "Description of the test case",
+                "tesCase": "Test cases that are generated"
+            }} and so on```
+            """,
+            tools=[{"type": "code_interpreter"}],
+            model="gpt-4-1106-preview",
+        )
+        return self.assistant
 
 
-def store_thread(wa_id, thread_id):
-    with shelve.open("threads_db", writeback=True) as threads_shelf:
-        threads_shelf[wa_id] = thread_id
+    def check_if_thread_exists(self, wa_id):
+        with shelve.open("threads_db") as threads_shelf:
+            return threads_shelf.get(wa_id, None)
 
+    def store_thread(self, wa_id, thread_id):
+        with shelve.open("threads_db", writeback=True) as threads_shelf:
+            threads_shelf[wa_id] = thread_id
 
-# --------------------------------------------------------------
-# Generate response
-# --------------------------------------------------------------
-def generate_response(message_body):
-    # If a thread doesn't exist, create one and store it
-    print(f"Creating new thread")
-    thread = client.beta.threads.create()
-    thread_id = thread.id
+    
+    def generate_response(self,url):
+        scrapper = HTMLScraper()
+        htmlCode = scrapper.remove_css_js_and_save_html(url)
+        # If a thread doesn't exist, create one and store it
+        print(f"Creating new thread")
+        thread = self.client.beta.threads.create()
+        thread_id = thread.id
 
-    # Add message to thread
-    message = client.beta.threads.messages.create(
-        thread_id=thread_id,
-        role="user",
-        content=message_body,
-    )
+        # Add message to thread
+        message = self.client.beta.threads.messages.create(
+            thread_id=thread_id,
+            role="user",
+            content=htmlCode,
+        )
 
-    # Run the assistant and get the new message
-    new_message = run_assistant(thread)
-    return new_message
+        # Run the assistant and get the new message
+        new_message = self.run_assistant(thread)
+        return new_message
 
+    def run_assistant(self, thread):
+        # Run the assistant
+        run = self.client.beta.threads.runs.create(
+            thread_id=thread.id,
+            assistant_id=self.assistant.id,
+        )
 
-# --------------------------------------------------------------
-# Run assistant
-# --------------------------------------------------------------
-def run_assistant(thread):
-    # Run the assistantx
-    run = client.beta.threads.runs.create(
-        thread_id=thread.id,
-        assistant_id=assistant.id,
-    )
+        # Wait for completion
+        while run.status != "completed":
+            # Be nice to the API
+            time.sleep(0.5)
+            run = self.client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
 
-    # Wait for completion
-    while run.status != "completed":
-        # Be nice to the API
-        time.sleep(0.5)
-        run = client.beta.threads.runs.retrieve(thread_id=thread.id, run_id=run.id)
+        # Retrieve the Messages
+        messages = self.client.beta.threads.messages.list(thread_id=thread.id)
+        new_message = messages.data[0].content[0].text.value
+        return new_message
 
-    # Retrieve the Messages
-    messages = client.beta.threads.messages.list(thread_id=thread.id)
-    new_message = messages.data[0].content[0].text.value
-    return new_message
+# https://rahulshettyacademy.com/loginpagePractise/

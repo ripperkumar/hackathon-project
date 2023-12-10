@@ -1,11 +1,9 @@
 import streamlit as st
-
-
 import time
 import sys
-sys.path.append("/Users/testvagrant/Baganna/hackathon-project/backend/")
-from backend.scrapper.HTMLScraper import HTMLScraper
-from backend.model.assistant import generate_response, create_assistant
+sys.path.append("/Users/testvagrant/Documents/junior-vagrants/")
+from backend.model.Assistant import Assistant
+
 def home_page():
     st.title("Auto TestCase Generator")
 
@@ -27,17 +25,17 @@ def home_page():
             }
         </style>
     """, unsafe_allow_html=True)
-    tools = ["Select","Selenium", "PlayWrite", "WebDriverIO"]
-    selected_tool = st.selectbox("Select an tool:", tools)
+    tools = ["Select","Selenium", "PlayWright", "WebDriverIO"]
+    selected_tool = st.selectbox("Select a tool:", tools)
     if selected_tool == "Selenium":
         languages = ["Select","Java", "JavaScript", "Python", "Ruby","CSharp","Kotlin"]
-        selected_language = st.selectbox("Select an Language:", languages)
-    elif selected_tool == "PlayWrite":
+        selected_language = st.selectbox("Select a Language:", languages)
+    elif selected_tool == "PlayWright":
         languages = ["Select","Java", "JavaScript", "Python", ".NET"]
-        selected_language = st.selectbox("Select an Language:", languages)
+        selected_language = st.selectbox("Select a Language:", languages)
     else:
         languages = ["Select", "JavaScript"]
-        selected_language = st.selectbox("Select an Language:", languages)
+        selected_language = st.selectbox("Select a Language:", languages)
     # Submit button with styling
     st.markdown("""
         <style>
@@ -61,8 +59,9 @@ def home_page():
             success_mesage = st.success("wait for response")
             time.sleep(1)
             success_mesage.empty()
-            html_code = HTMLScraper().remove_css_js_and_save_html(input_text)
-            create_assistant(selected_language,selected_tool)
-            response = generate_response(html_code)
+            myAssistant = Assistant()
+            # html_code = scrapper.remove_css_js_and_save_html(input_text)
+            myAssistant.create_assistant(selected_language,selected_tool)
+            response = myAssistant.generate_response(input_text)
             st.code(response)
 
