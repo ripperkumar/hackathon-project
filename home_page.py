@@ -1,8 +1,8 @@
 import streamlit as st
 from scraping import remove_css_js_and_save_html
-
+import time
 def home_page():
-    st.title("Auto Test Generator")
+    st.title("Auto TestCase Generator")
 
     # Input textbox with styling
     st.markdown("""
@@ -12,7 +12,7 @@ def home_page():
             }
         </style>
     """, unsafe_allow_html=True)
-    input_text = st.text_input("Enter Link:", "")
+    input_text = st.text_input("Enter URL:", "")
 
     # Dropdown with styling
     st.markdown("""
@@ -53,7 +53,8 @@ def home_page():
         elif selected_language == "Select":
             st.warning("Please select language.")
         else:
-            st.success()
-            # Display the entered text and selected option
+            success_mesage = st.success("wait for response")
+            time.sleep(1)
+            success_mesage.empty()
             st.code(remove_css_js_and_save_html(input_text))
 

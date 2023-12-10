@@ -7,14 +7,14 @@ def main():
 
     # Add image to the top-left corner
     with col1:
-        image = st.sidebar.image("/Users/testvagrant/Baganna/hackathon-project/jv.jpg", use_column_width=False, width=100)
+        image = st.sidebar.image("/Users/testvagrant/Baganna/hackathon-project/images/jv.jpg", use_column_width=False, width=80)
 
     caption_text = "Junior Vagrants"
     with col2:
         st.sidebar.markdown(f'<div style="float: left; margin-right: auto; margin-top: auto; font-size:15px;">{caption_text}</div>', unsafe_allow_html=True)
 
     st.sidebar.title("Navigation")
-    pages = ["Home", "About"]
+    pages = ["Home", "About Us"]
     choice = st.sidebar.selectbox("Go to", pages)
 
     if choice == "Home":
